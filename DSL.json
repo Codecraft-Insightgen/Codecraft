@@ -1,0 +1,138 @@
+{
+    "version": "1.0",
+    "workflow": {
+        "workflow_id": "4cc6a79f-6583-41f3-bc8a-350b7d734a6d",
+        "workflow_name": "Chat Processing Pipeline",
+        "nodes": {
+            "fileInput": {
+                "type": "File",
+                "id": "file-input-1",
+                "config": {
+                    "path": "project.txt",
+                    "x_coordinate": 124,
+                    "y_coordinate": 539
+                },
+                "outputs": ["Data"]
+            },
+            "textInput": {
+                "type": "TextInput",
+                "id": "text-input-1",
+                "config": {
+                    "defaultValue": "hi"
+                },
+                "outputs": ["Text"]
+            },
+            "parseData": {
+                "type": "Parser",
+                "id": "parser-1",
+                "config": {
+                },
+                "inputs": ["Data"],
+                "outputs": ["Text"]
+            },
+            "chatInput": {
+                "type": "ChatInput",
+                "id": "chat-input-1",
+                "config": {
+                    "store_messages": "True",
+                    "sessionID": "",
+                    "files": "path_to_file"
+                },
+                "inputs": ["Text"],
+                "outputs": ["Message"]
+            },
+            "anthropic": {
+                "type": "AnthropicLLM",
+                "id": "anthropic-1",
+                "config": {
+                    "modelName": "claude-3-5-sonnet-latest",
+                    "temperature": 0.1,
+                    "input": "receiving_input",
+                    "system_message": "system_message",
+                    "maximum_tokens": 4096,
+                    "API_key": "APIKEY"
+                },
+                "inputs": ["Input", "SystemMessage"],
+                "outputs": ["Text", "LanguageModel"]
+            },
+            "textOutput": {
+                "type": "TextOutput",
+                "id": "text-output-1",
+                "config": {
+                },
+                "inputs": ["Text"],
+                "outputs": ["Text"]
+            },
+            "chatOutput": {
+                "type": "ChatOutput",
+                "id": "chat-output-1",
+                "config": {
+                },
+                "inputs": ["Text"],
+                "outputs": ["Message"]
+            }
+        },
+        "connections": [
+            {
+                "from": {
+                    "node": "fileInput",
+                    "output": "Data"
+                },
+                "to": {
+                    "node": "parseData",
+                    "input": "Data"
+                }
+            },
+            {
+                "from": {
+                    "node": "textInput",
+                    "output": "Text"
+                },
+                "to": {
+                    "node": "chatInput",
+                    "input": "Text"
+                }
+            },
+            {
+                "from": {
+                    "node": "parseData",
+                    "output": "Text"
+                },
+                "to": {
+                    "node": "anthropic",
+                    "input": "Input"
+                }
+            },
+            {
+                "from": {
+                    "node": "chatInput",
+                    "output": "Message"
+                },
+                "to": {
+                    "node": "anthropic",
+                    "input": "SystemMessage"
+                }
+            },
+            {
+                "from": {
+                    "node": "anthropic",
+                    "output": "Text"
+                },
+                "to": {
+                    "node": "textOutput",
+                    "input": "Text"
+                }
+            },
+            {
+                "from": {
+                    "node": "anthropic",
+                    "output": "Text"
+                },
+                "to": {
+                    "node": "chatOutput",
+                    "input": "Text"
+                }
+            }
+        ]
+    }
+}
