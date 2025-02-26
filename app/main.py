@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.endpoints import workflows
+from app.api.endpoints import workflows, auth
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 origins = [
@@ -16,6 +16,7 @@ app.add_middleware(
     allow_headers=["*"],              # Allow all headers
 )
 app.include_router(workflows.router, prefix="/workflows")
+app.include_router(auth.router, prefix="/auth")
 
 @app.get("/")
 async def root():
