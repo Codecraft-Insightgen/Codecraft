@@ -7,7 +7,6 @@ This is the FastAPI backend for Codecraft. The backend provides APIs for managin
 - [Installation](#installation)
 - [Running the Backend](#running-the-backend)
 - [API Documentation](#api-documentation)
-- [Contributing](#contributing)
 
 ## Requirements
 
@@ -48,11 +47,3 @@ This is the FastAPI backend for Codecraft. The backend provides APIs for managin
 FastAPI automatically generates interactive API documentation. You can access it at:
 - Swagger UI: `http://127.0.0.1:8000/docs`
 - ReDoc: `http://127.0.0.1:8000/redoc`
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
-
-
-<font size="0"><span style="color:grey"><br>_This is an Easter Egg. Thanks for reading until the end. <br>
--Sarang Shelke_</span>
