@@ -6,7 +6,7 @@ import uuid
 class WorkflowBase(BaseModel):
     workflow_name: str
     description: Optional[str] = None
-    created_by: uuid.UUID
+    # created_by: Optional[uuid.UUID]
     dsl_file: Optional[Dict[Any, Any]] = None
 
 class WorkflowCreate(WorkflowBase):

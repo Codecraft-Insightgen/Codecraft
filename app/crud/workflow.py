@@ -7,12 +7,14 @@ from sqlalchemy.future import select
 from app.engine import engine
 import uuid
 
-async def create_workflow(workflow: WorkflowCreate):
+async def create_workflow(workflow: WorkflowCreate, current_user:uuid.UUID):
     async with async_session() as session:
+        # print(current_user)
+        # print(type(current_user))
         new_workflow = Workflow(
             workflow_name=workflow.workflow_name,
             description=workflow.description,
-            created_by=workflow.created_by,
+            created_by=current_user,
             dsl_file=workflow.dsl_file
         )
         try:
@@ -31,6 +33,11 @@ async def get_workflow(workflow_id: uuid.UUID):
     async with async_session() as session:
         result = await session.execute(select(Workflow).filter(Workflow.workflow_id == workflow_id))
         return result.scalars().first()
+
+async def get_all_workflows(user_id):
+    async with async_session() as session:
+        result = await session.execute(select(Workflow).filter(Workflow.created_by == user_id))
+        return result.scalars().all()
 
 async def update_workflow(workflow_id: uuid.UUID, workflow: WorkflowUpdate):
     async with async_session() as session:

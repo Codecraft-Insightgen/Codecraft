@@ -1,7 +1,8 @@
 from fastapi import Depends, HTTPException
 from app.schemas.users import UserCreate, Login
 from app.db.auth import get_supabase
-
+from datetime import datetime, timedelta
+from app.core.security import create_access_token
 async def create_user(user:UserCreate, db=Depends(get_supabase)):
     try:
         response = db.auth.admin.create_user({
@@ -21,6 +22,15 @@ async def login(user: Login, db=Depends(get_supabase)):
             "email": user.email,
             "password": user.password
         })
-        return {"message": "User logged in successfully", "data": response}
+        # print(type(response))
+        # print(response.data)
+        user_id=response.user.id
+        # print(dict(response).get("user"))
+        access_token_expires = timedelta(minutes=30)
+        access_token = create_access_token(
+        data={"sub": user_id},
+        expires_delta=access_token_expires
+        )
+        return {"message": "User logged in successfully", "access_token": access_token}
     except Exception as e:
         return HTTPException(status_code=400, detail=str(e))

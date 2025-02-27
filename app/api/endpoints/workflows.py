@@ -1,20 +1,26 @@
 import uuid
 
 from fastapi import APIRouter, HTTPException
+from fastapi.params import Depends
+
 from app.schemas.workflow import WorkflowCreate, WorkflowResponse, WorkflowUpdate, ExecutionStatus
 from app.crud.workflow import (
-    create_workflow, get_workflow, update_workflow, delete_workflow,
+    create_workflow, get_workflow, get_all_workflows, update_workflow, delete_workflow,
     start_workflow_execution, get_execution_status, retry_execution
 )
+from app.core.security import get_current_user
 
 router = APIRouter()
 
 @router.post("/create", response_model=WorkflowResponse)
-async def create_new_workflow(workflow: WorkflowCreate):
+async def create_new_workflow(workflow: WorkflowCreate, current_user:uuid.UUID= Depends(get_current_user)):
     # print(workflow)
-    return await create_workflow(workflow)
+    print(current_user)
+    return await create_workflow(workflow, current_user)
 
-
+@router.get("/user/all", response_model=list[WorkflowResponse])
+async def get_all_workflows_endpoint(user_id: uuid.UUID= Depends(get_current_user)):
+    return await get_all_workflows(user_id)
 
 @router.get("/{workflow_id}", response_model=WorkflowResponse)
 async def read_workflow(workflow_id: uuid.UUID):
