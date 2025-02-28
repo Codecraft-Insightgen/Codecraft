@@ -37,10 +37,10 @@ def execute_file_input(path_to_file):
         # doc = docx.getdocumenttext(path_to_file)
         return "\n".join([para.text for para in doc.paragraphs])
 
-def execute_chat_input(text):
-    if not text:
-        raise FileNotFoundError(text)
-    return text
+def execute_chat_input(_text):
+    if not _text:
+        raise FileNotFoundError(_text)
+    return _text
 
 def execute_llm(model_name, file_input=None, chat_input=None, api_key=None, system_prompt=None):
     if not api_key:
@@ -82,9 +82,9 @@ def execute_llm(model_name, file_input=None, chat_input=None, api_key=None, syst
         raise ValueError("Model not supported")
 
 
-if __name__ == "__main__":
-    text = execute_file_input(r'/test.docx')
-    # print(text)
-    t = execute_llm("mistral-7b", r'/test.docx', "hi, please analyze this and give me a one line answer on what this is.", "LqlGQaD5YIcu0RtSVejsrZbWJcH83m0a")
-    # print(type(t))
-    print(t)
+# if __name__ == "__main__":
+#     text = execute_file_input(r'/test.docx')
+#     # print(text)
+#     t = execute_llm("mistral-7b", r'/test.docx', "hi, please analyze this and give me a one line answer on what this is.", "LqlGQaD5YIcu0RtSVejsrZbWJcH83m0a")
+#     # print(type(t))
+#     print(t)
