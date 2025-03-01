@@ -3,10 +3,10 @@ import uuid
 from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 
-from app.schemas.workflow import WorkflowCreate, WorkflowResponse, WorkflowUpdate, ExecutionStatus
+from app.schemas.workflow import WorkflowCreate, WorkflowResponse, DSL, ExecutionStatus, FileText
 from app.crud.workflow import (
-    create_workflow, get_workflow, get_all_workflows, update_workflow, delete_workflow,
-    start_workflow_execution, get_execution_status, retry_execution
+    create_workflow, get_workflow, get_all_workflows, update_dsl, delete_workflow,
+    start_workflow_execution, get_execution_status, retry_execution, update_file_text
 )
 from app.core.security import get_current_user
 
@@ -29,9 +29,15 @@ async def read_workflow(workflow_id: uuid.UUID):
         raise HTTPException(status_code=404, detail="Workflow not found")
     return workflow
 
-@router.put("/{workflow_id}", response_model=dict)
-async def update_existing_workflow(workflow_id: uuid.UUID, workflow: WorkflowUpdate):
-    await update_workflow(workflow_id, workflow)
+
+@router.post("/{workflow_id}/upload_file")
+async def upload_text_endpoint(text: FileText, workflow_id: uuid.UUID):
+    await update_file_text(workflow_id, text)
+    return {"message": "File uploaded successfully"}
+
+@router.post("/{workflow_id}/upload_dsl", response_model=dict)
+async def update_existing_workflow(dsl: DSL, workflow_id: uuid.UUID):
+    await update_dsl(workflow_id, dsl)
     return {"message": "Workflow saved successfully"}
 
 @router.delete("/{workflow_id}", response_model=dict)

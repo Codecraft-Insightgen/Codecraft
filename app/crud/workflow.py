@@ -1,10 +1,11 @@
 from app.models.workflow import Workflow
-from app.schemas.workflow import WorkflowCreate, WorkflowUpdate
+from app.schemas.workflow import WorkflowCreate, DSL, FileText
 from app.db.session import async_session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.future import select
 from app.engine import engine
+import datetime
 import uuid
 
 async def create_workflow(workflow: WorkflowCreate, current_user:uuid.UUID):
@@ -39,13 +40,21 @@ async def get_all_workflows(user_id):
         result = await session.execute(select(Workflow).filter(Workflow.created_by == user_id))
         return result.scalars().all()
 
-async def update_workflow(workflow_id: uuid.UUID, workflow: WorkflowUpdate):
+async def update_dsl(workflow_id: uuid.UUID, dsl: DSL):
     async with async_session() as session:
         result = await session.execute(select(Workflow).filter(Workflow.workflow_id == workflow_id))
         wf = result.scalars().first()
         if wf:
-            wf.dsl_file = dict(workflow.dsl_file)
-            wf.updated_at = workflow.updated_at
+            wf.dsl_file = dsl
+            wf.updated_at = datetime.datetime.now()
+            await session.commit()
+
+async def update_file_text(workflow_id: uuid.UUID, text: FileText):
+    async with async_session() as session:
+        result = await session.execute(select(Workflow).filter(Workflow.workflow_id == workflow_id))
+        wf = result.scalars().first()
+        if wf:
+            wf.file_input_text = text
             await session.commit()
 
 async def delete_workflow(workflow_id: uuid.UUID):

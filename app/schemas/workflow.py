@@ -14,7 +14,8 @@ class WorkflowCreate(WorkflowBase):
 
 class WorkflowUpdate(BaseModel):
     updated_at: datetime
-    dsl_file: Dict[Any, Any]
+    dsl_file: Optional[Dict[Any, Any]]
+    file_input_text: Optional[str]
 
 class WorkflowResponse(WorkflowBase):
     workflow_id: uuid.UUID
@@ -29,3 +30,9 @@ class WorkflowResponse(WorkflowBase):
 
 class ExecutionStatus(BaseModel):
     message: str
+
+class FileText(BaseModel):
+    file_input_text: str
+
+class DSL(BaseModel):
+    dsl_file: Dict[Any, Any]

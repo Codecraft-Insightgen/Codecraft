@@ -15,3 +15,4 @@ class Workflow(Base):
     updated_at = Column(DateTime(timezone=True), default=lambda:datetime.now(), onupdate=lambda:datetime.now())
     created_by = Column(UUID(as_uuid=True), nullable=True, default=uuid.UUID)
     dsl_file = Column(JSON, nullable=True)  # Now using JSON type
+    file_input_text = Column(Text, nullable=True)
