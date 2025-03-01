@@ -1,5 +1,0 @@
-fastapi
-uvicorn
-uuid
-pydantic
-supabase == 2.12.0
